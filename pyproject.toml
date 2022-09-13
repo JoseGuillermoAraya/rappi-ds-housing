@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "rappi-ds-housing"
+version = "0.1.0"
+description = "Rappi DS quiz"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "rappi_ds_housing"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pandas = "^1.4.4"
+seaborn = "^0.12.0"
+matplotlib = "^3.5.3"
+jupyter = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
