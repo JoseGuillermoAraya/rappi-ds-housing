@@ -2,7 +2,7 @@ from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, OrdinalEnc
 from sklearn.pipeline import make_pipeline, FeatureUnion
 from sklearn.compose import make_column_transformer, TransformedTargetRegressor
 from scipy.special import boxcox1p, inv_boxcox1p
-from housing import commons, COLS
+from housing import commons, COLS, models
 from housing.commons import data_holder
 
 
@@ -70,3 +70,20 @@ def build_final_pipeline(total_size_transformer, group_feat_transformer, boxcox_
     transformedTargetReg = TransformedTargetRegressor(
         regressor=vr, func=lambda x: boxcox1p(x, 0), inverse_func=lambda x: inv_boxcox1p(x, 0))
     return make_pipeline(aux2_transformer, new_feats_ohe_transformer, StandardScaler(with_mean=False), transformedTargetReg)
+
+
+def get_final_estimator():
+    xgb_m = models.create_xgb()
+    en = models.create_elastic_net()
+    r = models.create_kernel_ridge()
+    l = models.create_lasso()
+    sgd = models.create_sdg()
+    vr = models.VotingRegressor([('xgb', xgb_m), ('en', en), ('r', r),
+                                ('l', l), ('sgd', sgd)], weights=[0.6, 0.1, 0.1, 0.1, 0.1])
+    total_size_transformer = build_total_size_transformer()
+    group_feat_transformer = build_group_feat_transformer()
+    boxcox_transformer = build_box_cox_transformer()
+    has_been_renovated_transformer = build_has_been_renovated_transformer()
+    onehot_transformer = build_one_hot_transformer()
+
+    return build_final_pipeline(total_size_transformer, group_feat_transformer, boxcox_transformer, has_been_renovated_transformer, onehot_transformer, vr)
