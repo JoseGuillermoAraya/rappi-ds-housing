@@ -86,4 +86,9 @@ def get_final_estimator():
     has_been_renovated_transformer = build_has_been_renovated_transformer()
     onehot_transformer = build_one_hot_transformer()
 
-    return build_final_pipeline(total_size_transformer, group_feat_transformer, boxcox_transformer, has_been_renovated_transformer, onehot_transformer, vr)
+    p = build_final_pipeline(total_size_transformer, group_feat_transformer,
+                             boxcox_transformer, has_been_renovated_transformer, onehot_transformer, vr)
+    data = commons.data_holder.get_data()
+    X = data.drop('price', axis=1)
+    p.fit(X, data['price'])
+    return p
